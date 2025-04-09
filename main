@@ -1,0 +1,42 @@
+import time
+from turtle import Screen
+from player import Player
+from car import Car
+from game import Game
+
+screen = Screen()
+screen.setup(width=600,height=600)
+screen.bgcolor('black')
+screen.tracer(0)
+screen.listen()
+time_sleep = 0.1
+
+player = Player()
+car = Car()
+game_logic = Game()
+
+screen.onkey(fun=player.move_up, key='Up')
+screen.onkey(fun=player.move_down, key='Down')
+
+game = True
+
+while game:
+    screen.update()
+    time.sleep(time_sleep)
+    car.move()
+    if car.num_created%5 ==0:
+        car.create_car()
+    else:
+        car.increase_create_car()
+
+    for cars in car.car_list:
+        if player.distance(cars) < 21:
+            game_logic.game_over()
+            game =False
+
+    if player.ycor() > 280:
+        game_logic.level_up()
+        player.level_up()
+        time_sleep -= 0.01
+
+screen.exitonclick()
